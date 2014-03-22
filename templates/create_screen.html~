@@ -1,0 +1,22 @@
+<!doctype html>
+<html>
+<head>
+	<h> Post a message, see it on the screen!</h>
+</head>
+<body>
+{% with messages = get_flashed_messages() %}
+{% if messages %}
+<ul class=flashes>
+{% for message in messages %}
+<li>{{ message }}</li>
+{% endfor %}
+</ul>
+{% endif %}
+{% endwith %}
+<form action="" method="post" name="create_article">
+<p> Send as: <br>{{form.sender}}</br></p>
+<p> Message: <br>{{form.message}}</br></p>
+<p> <input type="submit" value="Post"> </p>
+</form>
+</body>
+</html>

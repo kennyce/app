@@ -1,0 +1,85 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Title</title>
+</head>
+<body>
+<script src="{{url_for('static',filename='jquery-1.11.0.js')}}">
+</script>
+<script src="{{url_for('static',filename='underscore.js')}}">
+</script>
+<script src="{{url_for('static',filename='backbone.js')}}">
+</script>
+
+<section id="messageapp">
+<header id="header">
+<h1>messages</h1>
+</header>
+<section id="main">
+<ul id="message-list">
+
+</ul>
+</section>
+</section>
+<script type="text/template" id="msg-template">
+<div class="view">
+	<label><%- sender %> said: <%- message %> at <%- time %></label>
+</div>
+</script>
+<script>
+// Your code goes here
+
+var Message = Backbone.Model.extend({
+				defaults:{
+					key:'1',
+					sender:'Donna',
+					message:'Hi',
+					time:'10:00'
+					}
+					});
+var MessageCollection = Backbone.Collection.extend({
+												model:Message,
+												url:'/tvapi'
+												});
+												
+var messages = new MessageCollection();
+messages.fetch();	
+
+var app = app || {}
+app.AppView = Backbone.View.extend({
+	el:'#messageapp', initialize: function() {
+	this.$main = this.$('#main');
+	this.listenTo(messages, 'reset', this.addAll);
+},
+
+	addOne: function( Message ) {
+var view = new app.TodoView({ model: Message });
+$('#message-list').append( view.render().el );
+},
+	addAll: function() {
+	this.$('#message-list').html('');
+	app.messages.each(this.addOne, this);										
+	}});
+	
+app.TodoView = Backbone.View.extend({
+
+		tagName: 'li',
+		template: _.template( $('#msg-template').html() ),
+		events: {},
+		initialize: function() {
+		this.listenTo(this.model, 'change', this.render);
+		},
+		render: function() {
+		this.$el.html( this.template( this.model.toJSON()));
+		}});
+var app = app || {}
+var ENTER_KEY = 13;
+		
+$(function() {
+// Kick things off by creating the **App**.
+new app.AppView();
+});
+					
+</script>
+</body>

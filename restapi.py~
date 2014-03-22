@@ -1,0 +1,57 @@
+
+from flask.ext.restful import Resource, Api
+from app.models import Message
+from app import db
+from datetime import datetime
+#rom flask.ext.restful.utils import cors
+from flask import jsonify
+#from app.cd import crossdomain
+
+
+api = Api()
+class Tv(Resource):
+	def get(self):
+		t = datetime.utcnow()
+		show = Message.query.order_by(db.desc(Message.time)).limit(10).all()
+		mlist = []
+		for mess in show:
+			f = mess.timedel(t)
+			r = {
+					'key':mess.id,
+					'sender':mess.sender,
+					'message':mess.content,
+					'time': mess.time.strftime("%A, %d %B %Y at %I:%M%p")
+				}
+			mlist.append(r)
+		return mlist,210,{'Access-Control-Allow-Origin':'*'}
+	def options(self):
+		return {'Allow': 'GET'},200,{'Access-Control-Allow-Origin':'*','Access-Control-Allow-Methods':'PUT,GET'}
+			
+		
+class Admin(Resource):
+	def get(self,senderz):		
+		mess_list = Message.query.filter_by(sender=senderz).all()
+		mlist = []
+		for mess in mlist:
+			r = {
+					'key': mess.id,
+					'sender':mess.sender,
+					'message':mess.content,
+					'time': mess.time.strftime("%A, %d at %B %Y %I:%M%p")
+				}
+			mlist.append(r)
+		return mlist
+		
+	def delete(self,mess_id):
+		mess.query.get(mess_id).delete()
+		
+	def post(self,message):
+		m = mess('Admin',message)
+		db.session.add(m)
+		db.session.commit()
+		
+api.add_resource(Tv,'/tvapi')
+
+
+	
+	

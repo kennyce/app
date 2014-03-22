@@ -1,0 +1,28 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Title</title>
+</head>
+<body>
+<script src="{{url_for('static',filename='jquery-1.11.0.js')}}">
+</script>
+
+<section id="messageapp">
+<header id="header">
+<h1>messages</h1>
+</header>
+<section id="main">
+<ul id="message-list"></ul>
+</section>
+</section>
+<script>
+$(document).ready(function() {
+    $.ajax({
+        url: "/tvapi"
+    }).then($.each(data, function(i,data){
+       $('#messagelist').append(data.id)});
+    });
+});
+</script>
+</body>
